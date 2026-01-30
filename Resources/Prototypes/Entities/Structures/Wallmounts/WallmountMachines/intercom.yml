@@ -134,6 +134,7 @@
         wires:
           0: { visible: false }
           1: { visible: true }
+  - type: WallMount
   - type: Construction
     graph: Intercom
     node: assembly
