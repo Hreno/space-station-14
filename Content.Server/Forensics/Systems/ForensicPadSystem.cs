@@ -60,6 +60,18 @@ namespace Content.Server.Forensics
 
             if (!_forensics.CanAccessFingerprint(args.Target.Value, out var blocker))
             {
+                // If fingerprints are blocked, try to collect fibers from the blocker (e.g., gloves)
+                if (blocker is { } blockEnt && TryComp<FiberComponent>(blockEnt, out var blockFiber))
+                {
+                    if (args.User != args.Target)
+                    {
+                        _popupSystem.PopupEntity(Loc.GetString("forensic-pad-start-scan-user", ("target", Identity.Entity(args.Target.Value, EntityManager))), args.Target.Value, args.User);
+                        _popupSystem.PopupEntity(Loc.GetString("forensic-pad-start-scan-target", ("user", Identity.Entity(args.User, EntityManager))), args.Target.Value, args.Target.Value);
+                    }
+                    var fiberSample = string.IsNullOrEmpty(blockFiber.FiberColor) ? Loc.GetString("forensic-fibers", ("material", blockFiber.FiberMaterial)) : Loc.GetString("forensic-fibers-colored", ("color", blockFiber.FiberColor), ("material", blockFiber.FiberMaterial));
+                    StartScan(uid, args.User, args.Target.Value, component, fiberSample);
+                    return;
+                }
 
                 if (blocker is { } item)
                     _popupSystem.PopupEntity(Loc.GetString("forensic-pad-no-access-due", ("entity", Identity.Entity(item, EntityManager))), args.Target.Value, args.User);
