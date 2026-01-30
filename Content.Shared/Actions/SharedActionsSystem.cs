@@ -586,7 +586,7 @@ public abstract partial class SharedActionsSystem : EntitySystem
         if (ev.Toggle)
             SetToggled((action, action), !action.Comp.Toggled);
 
-        _audio.PlayPredicted(action.Comp.Sound, performer, predicted ? performer : null);
+        _audio.PlayPredicted(action.Comp.Sound, performer, null);
 
         RemoveCooldown((action, action));
         StartUseDelay((action, action));
